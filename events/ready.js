@@ -1,9 +1,9 @@
-const { emojiquizMYSQL } = require('../db.js');
+const { emojiquiz } = require('../db.js');
 module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
-		emojiquizMYSQL.createTable();
+		emojiquiz.createTable();
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},
 };

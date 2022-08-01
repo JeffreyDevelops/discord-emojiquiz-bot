@@ -1,9 +1,9 @@
 
-const Database = require('./classes/Database.js')
-const emojiquizMYSQL = new Database();
-emojiquizMYSQL.host = "localhost";
-emojiquizMYSQL.user = "root";
-emojiquizMYSQL.password = "";
-emojiquizMYSQL.database = "emojiquiz";
-emojiquizMYSQL.charset = 'utf8mb4';
-module.exports = {emojiquizMYSQL};
+const Emojiquiz = require('./classes/Emojiquiz.js')
+const emojiquiz = new Emojiquiz();
+emojiquiz.host = "localhost";
+emojiquiz.user = "root";
+emojiquiz.password = "";
+emojiquiz.database = "emojiquiz";
+emojiquiz.charset = 'utf8mb4';
+module.exports = {emojiquiz};

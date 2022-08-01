@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const Emojiquiz = require('../classes/Emojiquiz.js');
 const { emojiquiz } = require('../db.js');
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -21,12 +20,12 @@ module.exports = {
 		const emoji_word = await interaction.options.getString('emoji-word');
         const emoji_hint = await interaction.options.getString('emoji-hint');
         const searched_word = await interaction.options.getString('searched-word');
-		
 		emojiquiz.guildID = interaction.guildId;
-		emojiquiz.guildName = interaction.member.guild.id;
+		emojiquiz.guildName = interaction.member.guild.name;
 		emojiquiz.word = emoji_word;
 		emojiquiz.hint = emoji_hint;
 		emojiquiz.searched_word = searched_word;
+		emojiquiz.interaction = interaction;
 		console.log(emojiquiz);
 		emojiquiz.createEmojiQuiz();
 
