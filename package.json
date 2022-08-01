@@ -1,0 +1,22 @@
+{
+  "name": "emojiquiz",
+  "version": "1.0.0",
+  "description": "A package for discord where you can easily create emoji quizes coded with discordjs.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "keywords": [
+    "Discord",
+    "emojiquiz",
+    "discord-emojiquiz",
+    "quiz",
+    "emoji"
+  ],
+  "author": "JezzyDevelopment",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.1.2",
+    "nodemon": "^2.0.19"
+  }
+}
