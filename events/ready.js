@@ -1,3 +1,4 @@
+const Database = require('./classes/Database.js')
 module.exports = {
 	name: 'ready',
 	once: true,
