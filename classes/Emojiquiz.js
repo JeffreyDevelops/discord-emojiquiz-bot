@@ -71,9 +71,9 @@ module.exports = class Emojiquiz {
             { name: '❗Hint', value: get_hint, inline: true },
         )
         .setColor('#FFFFFF')
-        .setFooter({ text: 'Assistance ~ solved the last emojiquiz! 😄', iconURL: `https://imgur.com/WbMHZqB.png` });
+        .setFooter({ text: 'Emojiquiz ~ solved the last emojiquiz! 😄', iconURL: `https://i.imgur.com/OHN3crW.png` });
         try {
-            await get_interaction.reply({content: `That's how it will look like!\nIf you need to change something do **/emojiquiz-delete**\nSearched word: **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
+            await get_interaction.reply({content: `That's how it will look like!\nSearched word: **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
                 if (config_array.includes(parseInt(get_guildID)) === false) {
                     let emojiquiz = [];
                     emojiquiz.push({word: get_word, hint: get_hint, searched: get_searched_word});
@@ -157,7 +157,7 @@ module.exports = class Emojiquiz {
                 { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
                 )
                 .setColor('#FFFFFF')
-                .setFooter({ text: 'Assistance ~ solved the last emojiquiz! 😄', iconURL: `https://imgur.com/WbMHZqB.png` });
+                .setFooter({ text: 'Emojiquiz ~ solved the last emojiquiz! 😄', iconURL: `https://i.imgur.com/OHN3crW.png` });
                 
                     try {
                         await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
