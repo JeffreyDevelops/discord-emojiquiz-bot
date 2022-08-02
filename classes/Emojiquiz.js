@@ -426,7 +426,7 @@ module.exports = class Emojiquiz {
                       const emoji_word_response = get_button.fields.getTextInputValue('emoji_word_input');
                       const hint_word_response = get_button.fields.getTextInputValue('hint_word_input');
                       const searched_word_response = get_button.fields.getTextInputValue('searched_word_input');
-                      get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
+                      await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
                   }
                 } catch (error) {
                     return;
