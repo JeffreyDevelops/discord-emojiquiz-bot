@@ -29,7 +29,7 @@ module.exports = class Emojiquiz {
           });
       }   
   
-      createTable() {
+      ready() {
         this.#createConnection()
           // Create database
           const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), channelID BIGINT(20), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), data longtext, PRIMARY KEY (guildID))";

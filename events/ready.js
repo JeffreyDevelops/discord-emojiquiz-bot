@@ -3,7 +3,7 @@ module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
-		emojiquiz.createTable();
+		emojiquiz.ready();
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},
 };
