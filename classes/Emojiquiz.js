@@ -1,8 +1,9 @@
 var mysql = require("mysql");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
-    constructor(host, user, password, database, charset, guildID, guildName, word, hint, searched_word, interaction) {
+    constructor(host, user, password, database, charset, guildID, guildName, word, hint, searched_word, interaction, channel) {
     this.host = host;
     this.user = user;
     this.password = password;
@@ -15,6 +16,7 @@ module.exports = class Emojiquiz {
     this.hint = hint;
     this.searched_word = searched_word;
     this.interaction = interaction;
+    this.channel = channel;
     }
 
     #createConnection() {
@@ -28,7 +30,7 @@ module.exports = class Emojiquiz {
       }   
   
       createTable() {
-          this.#createConnection();
+        this.#createConnection()
           // Create database
           const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), channelID BIGINT(20), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), data longtext, PRIMARY KEY (guildID))";
           this.connection.query(query, function (err, result) {
@@ -96,5 +98,89 @@ module.exports = class Emojiquiz {
         }
         make_a();
     });
-}    
+}
+
+    setup() {
+        let get_connection = this.connection;
+        let get_interaction = this.interaction;
+        let get_guildID = this.guildID;
+        let get_guildName = this.guildName;
+        let get_channel = this.channel;
+        const emojiquiz_btns = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Skip word')
+            .setCustomId('skip_word')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('⏩'),
+            new ButtonBuilder()
+            .setLabel('First Letter')
+            .setCustomId('first_letter')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('⚡'),
+            new ButtonBuilder()
+            .setLabel('Suggest new quiz')
+            .setCustomId('suggest_new_quiz')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('🤳'),
+    );          
+                let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${this.guildID}`;
+                this.connection.query(get_emojiquiz, function (err, data, result) {
+                    var row_nod;
+                    var config_array = [];
+                    Object.keys(data).forEach(function(key) {
+                        row_nod = data[key];
+                        config_array.push(row_nod.guildID);
+                });
+                const make_a = async function() {
+                if (config_array.includes(parseInt(get_guildID)) === true) {
+                    let emojiquiz = JSON.parse(row_nod.data);
+                    function shuffle(a) {
+                        var j, x, i;
+                        for (i = a.length - 1; i > 0; i--) {
+                            j = Math.floor(Math.random() * (i + 1));
+                            x = a[i];
+                            a[i] = a[j];
+                            a[j] = x;
+                        }
+                        return a;
+                    }
+                    shuffle(emojiquiz);
+    
+                const emoji_embed = new EmbedBuilder()
+                .setTitle('**Emojiquiz**')
+                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                .addFields(
+                { name: '❓Searched word', value: emojiquiz[0].word, inline: true},
+                { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
+                )
+                .setColor('#FFFFFF')
+                .setFooter({ text: 'Assistance ~ solved the last emojiquiz! 😄', iconURL: `https://imgur.com/WbMHZqB.png` });
+                
+                    try {
+                        await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
+                        let emojiquiz_send = await get_channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});   
+                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_guildID}, guildName = '${get_guildName}', channelID = ${get_channel.id}, emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_guildID}`;
+                        get_connection.query(getinfo, function (err, data, result) {
+                        });  
+                    } catch (error) {
+                     return;       
+                    }           
+                
+                } 
+                else {
+                    const embed = new EmbedBuilder()
+                    .setColor('#FFFFFF')
+                    .setDescription(`You need to do **/emojiquiz-create** first before you can setup the emojiquiz. 😀`);
+                        try {
+                            await get_interaction.reply({embeds: [embed], ephemeral: true});   
+                        } catch (error) {
+                            return;
+                        }   
+                }
+            }
+            make_a();
+            });
+}
+
 }

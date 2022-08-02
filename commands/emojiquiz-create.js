@@ -26,7 +26,6 @@ module.exports = {
 		emojiquiz.hint = emoji_hint;
 		emojiquiz.searched_word = searched_word;
 		emojiquiz.interaction = interaction;
-		console.log(emojiquiz);
 		emojiquiz.createEmojiQuiz();
 
 
