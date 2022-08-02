@@ -3,7 +3,7 @@ const { token } = require('./config.json');
 const path = require('path');
 const fs = require('fs');
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 
 client.commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
