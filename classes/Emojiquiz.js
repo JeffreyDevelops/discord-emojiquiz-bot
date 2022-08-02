@@ -76,7 +76,7 @@ module.exports = class Emojiquiz {
         .setFooter({ text: 'Emojiquiz ~ solved the last emojiquiz! 😄', iconURL: `https://i.imgur.com/OHN3crW.png` });
         try {
             await get_interaction.reply({content: `That's how it will look like!\nSearched word: **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
-                if (config_array.includes(parseInt(get_guildID)) === false) {
+                if (config_array.includes(get_guildID) === false) {
                     let emojiquiz = [];
                     emojiquiz.push({word: get_word, hint: get_hint, searched: get_searched_word});
                     let getinfo = `INSERT INTO emojiquiz (guildID, guildName, data) VALUES (${get_guildID}, '${get_guildName}', '${JSON.stringify(emojiquiz)}')`;
@@ -107,8 +107,6 @@ module.exports = class Emojiquiz {
     setup() {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
-        let get_guildID = this.guildID;
-        let get_guildName = this.guildName;
         let get_channel = this.channel;
         const emojiquiz_btns = new ActionRowBuilder()
         .addComponents(
@@ -128,7 +126,7 @@ module.exports = class Emojiquiz {
             .setStyle(ButtonStyle.Secondary)
             .setEmoji('🤳'),
     );          
-                let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${this.guildID}`;
+                let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
                 this.connection.query(get_emojiquiz, function (err, data, result) {
                     var row_nod;
                     var config_array = [];
@@ -137,7 +135,7 @@ module.exports = class Emojiquiz {
                         config_array.push(row_nod.guildID);
                 });
                 const make_a = async function() {
-                if (config_array.includes(parseInt(get_guildID)) === true) {
+                if (config_array.includes(get_interaction.guildId) === true) {
                     let emojiquiz = JSON.parse(row_nod.data);
                     function shuffle(a) {
                         var j, x, i;
@@ -164,7 +162,7 @@ module.exports = class Emojiquiz {
                     try {
                         await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
                         let emojiquiz_send = await get_channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});   
-                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_guildID}, guildName = '${get_guildName}', channelID = ${get_channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_guildID}`;
+                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_interaction.guildId}, guildName = '${get_interaction.member.guild.name}', channelID = ${get_channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_interaction.guildId}`;
                         get_connection.query(getinfo, function (err, data, result) {
                         });  
                     } catch (error) {
@@ -217,9 +215,9 @@ module.exports = class Emojiquiz {
         });
 		let get_message_content = get_message;
 		if (get_message.author.bot === true) return;
-		if (config_array.includes(parseInt(get_message.guildId)) === false) return;
+		if (config_array.includes(get_message.guildId) === false) return;
 		let emojiquiz_channel = row_nod.channelID;
-		if (emojiquiz_channel === parseInt(get_message.channelId)) {
+		if (emojiquiz_channel === get_message.channelId) {
 			let getinfo = `UPDATE emojiquiz SET bulkDeleteCounter = ${row_nod.bulkDeleteCounter + 1} WHERE guildID = ${get_message.guildId}`;
             get_connection.query(getinfo, function (err, data, result) {
             }); 

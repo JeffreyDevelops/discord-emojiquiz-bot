@@ -10,8 +10,6 @@ module.exports = {
     .setRequired(true)),
 	async execute(interaction) {
 		const emojiquiz_channel = await interaction.options.getChannel('channel');
-        emojiquiz.guildID = interaction.guildId;
-        emojiquiz.guildName = interaction.member.guild.name;
         emojiquiz.channel = emojiquiz_channel;
         emojiquiz.interaction = interaction;
         emojiquiz.setup();
