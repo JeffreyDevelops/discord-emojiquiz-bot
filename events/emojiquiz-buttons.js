@@ -4,5 +4,6 @@ module.exports = {
 	async execute(interaction) { 
         emojiquiz.button = interaction;
         emojiquiz.skip();
+        emojiquiz.firstLetter();
     }
 };

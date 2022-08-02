@@ -347,4 +347,30 @@ module.exports = class Emojiquiz {
             }
     }
 
+    firstLetter() {
+        if (this.button.customId === 'first_letter') {
+        let get_button = this.button;
+        let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${this.button.guildId}`;
+            this.connection.query(get_emojiquiz, function (err, data, result) {
+			var row_nod;
+			Object.keys(data).forEach(function(key) {
+			row_nod = data[key];
+			});	
+
+            let emojiquiz_data = JSON.parse(row_nod.data);
+            let emojiquiz_currentEmoji = row_nod.currentEmoji;
+
+            let searched_result = emojiquiz_data.find(e => e.word === emojiquiz_currentEmoji);
+            const make_a = async function() {
+                try {
+                    await get_button.reply({content: `The first letter is a **${searched_result.searched[0]}**.`, ephemeral: true});    
+                } catch (error) {
+                   return; 
+                }
+            }
+            make_a();
+        });
+    }
+}
+
 }
