@@ -161,7 +161,7 @@ module.exports = class Emojiquiz {
                     try {
                         await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
                         let emojiquiz_send = await get_channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});   
-                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_guildID}, guildName = '${get_guildName}', channelID = ${get_channel.id}, emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_guildID}`;
+                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_guildID}, guildName = '${get_guildName}', channelID = ${get_channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_guildID}`;
                         get_connection.query(getinfo, function (err, data, result) {
                         });  
                     } catch (error) {
