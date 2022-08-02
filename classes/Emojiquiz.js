@@ -34,7 +34,7 @@ module.exports = class Emojiquiz {
       ready() {
         this.#createConnection()
           // Create database
-          const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), channelID BIGINT(20), currentEmoji VARCHAR(255), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), data longtext, PRIMARY KEY (guildID))";
+          const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), channelID BIGINT(20), currentEmoji VARCHAR(255), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), pendingData longtext, data longtext, PRIMARY KEY (guildID))";
           this.connection.query(query, function (err, result) {
               if (err) {
                   console.log("Something went wrong check your database details.");
