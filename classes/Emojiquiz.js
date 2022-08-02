@@ -1,5 +1,5 @@
 var mysql = require("mysql");
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
@@ -299,6 +299,7 @@ module.exports = class Emojiquiz {
             .setStyle(ButtonStyle.Secondary)
             .setEmoji('🤳'),
     );       
+        if (get_button.isButton()) {
         if (get_button.customId === 'skip_word') {
             let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
             get_connection.query(get_emojiquiz, function (err, data, result) {
@@ -345,11 +346,13 @@ module.exports = class Emojiquiz {
                 make_a();   
                 });
             }
+        }
     }
 
     firstLetter() {
-        if (this.button.customId === 'first_letter') {
         let get_button = this.button;
+        if (get_button.isButton()) {
+        if (this.button.customId === 'first_letter') {
         let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${this.button.guildId}`;
             this.connection.query(get_emojiquiz, function (err, data, result) {
 			var row_nod;
@@ -372,5 +375,65 @@ module.exports = class Emojiquiz {
         });
     }
 }
+}
+    suggest_new_quiz() {
+        let get_button = this.button;     
+        const make_a = async function() {
+            try {
+                if (get_button.isButton()) {
+                    if (get_button.customId === 'suggest_new_quiz') {
+                      const modal = new ModalBuilder()
+                        .setCustomId('emojiquiz')
+                        .setTitle('Emojiquiz suggestion')
+                        .addComponents([
+                          new ActionRowBuilder().addComponents(
+                            new TextInputBuilder()
+                              .setCustomId('emoji_word_input')
+                              .setLabel('Word in emoji')
+                              .setStyle(TextInputStyle.Short)
+                              .setMinLength(1)
+                              .setMaxLength(100)
+                              .setPlaceholder('Enter word in emojis.')
+                              .setRequired(true),
+                          ),
+                          new ActionRowBuilder().addComponents(
+                          new TextInputBuilder()
+                          .setCustomId('hint_word_input')
+                          .setLabel('Hint')
+                          .setStyle(TextInputStyle.Short)
+                          .setMinLength(1)
+                          .setMaxLength(100)
+                          .setPlaceholder('Give a hint.')
+                          .setRequired(true)
+                          ),
+                          new ActionRowBuilder().addComponents(
+                            new TextInputBuilder()
+                            .setCustomId('searched_word_input')
+                            .setLabel('Searched Word')
+                            .setStyle(TextInputStyle.Short)
+                            .setMinLength(1)
+                            .setMaxLength(100)
+                            .setPlaceholder('Enter the searched word.')
+                            .setRequired(true)
+                            ),
+                        ]);
+                
+                     await get_button.showModal(modal);
+                    }
+                  }
+                
+                  if (get_button.type === InteractionType.ModalSubmit) {
+                      const emoji_word_response = get_button.fields.getTextInputValue('emoji_word_input');
+                      const hint_word_response = get_button.fields.getTextInputValue('hint_word_input');
+                      const searched_word_response = get_button.fields.getTextInputValue('searched_word_input');
+                      get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
+                  }
+                } catch (error) {
+                    return;
+                }
+            } 
+           
+            make_a();
+    }
 
 }

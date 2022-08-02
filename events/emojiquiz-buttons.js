@@ -5,5 +5,6 @@ module.exports = {
         emojiquiz.button = interaction;
         emojiquiz.skip();
         emojiquiz.firstLetter();
+        emojiquiz.suggest_new_quiz();
     }
 };
