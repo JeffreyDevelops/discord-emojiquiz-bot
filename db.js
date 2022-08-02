@@ -6,4 +6,5 @@ emojiquiz.user = "root";
 emojiquiz.password = "";
 emojiquiz.database = "emojiquiz";
 emojiquiz.charset = 'utf8mb4';
+emojiquiz.bigNumbers = true;
 module.exports = {emojiquiz};

@@ -3,7 +3,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuil
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
-    constructor(host, user, password, database, charset, guildID, guildName, word, hint, searched_word, interaction, channel, message, button) {
+    constructor(host, user, password, database, charset, bigNumbers, guildID, guildName, word, hint, searched_word, interaction, channel, message, button) {
     this.host = host;
     this.user = user;
     this.password = password;
@@ -19,6 +19,7 @@ module.exports = class Emojiquiz {
     this.channel = channel;
     this.message = message;
     this.button = button;
+    this.bigNumbers = bigNumbers;
     }
 
     #createConnection() {
@@ -27,7 +28,8 @@ module.exports = class Emojiquiz {
               user: this.user,
               password: this.password,
               database: this.database,
-              charset: this.charset
+              charset: this.charset,
+              supportBigNumbers: this.bigNumbers
           });
       }   
   
@@ -428,8 +430,8 @@ module.exports = class Emojiquiz {
                       const hint_word_response = get_button.fields.getTextInputValue('hint_word_input');
                       const searched_word_response = get_button.fields.getTextInputValue('searched_word_input');
                       await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
-                      let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
-                      get_connection.query(get_emojiquiz, function (err, data, result) {
+                      let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+                      get_connection.query(get_emojiquiz2, function (err, data, result) {
                       var row_nod;
                       Object.keys(data).forEach(function(key) {
                       row_nod = data[key];
