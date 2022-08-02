@@ -221,7 +221,9 @@ module.exports = class Emojiquiz {
             get_connection.query(getinfo, function (err, data, result) {
             }); 
 			let get_searched_word = JSON.parse(row_nod.data);
-			if (get_searched_word[0].searched.toLowerCase() === get_message.content.toLowerCase()) {
+            let get_current_emoji = row_nod.currentEmoji;
+            let new_get_searched_word = get_searched_word.find(e => e.word === get_current_emoji);
+			if (new_get_searched_word.searched.toLowerCase() === get_message.content.toLowerCase()) {
 			get_message_content.react('<a:JeezyCheckmark:1004023251829276824>');
 			let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_message.guildId}`;
             get_connection.query(get_emojiquiz2, function (err, data, result) {
@@ -247,7 +249,6 @@ module.exports = class Emojiquiz {
                         return a;
                     }
                     shuffle(emojiquiz);
-    
                 const emoji_embed = new EmbedBuilder()
                 .setTitle('**Emojiquiz**')
                 .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
@@ -256,10 +257,10 @@ module.exports = class Emojiquiz {
                 { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
                 )
                 .setColor('#FFFFFF')
-                .setFooter({ text: 'Assistance ~ solved the last emojiquiz! 😄', iconURL: `https://imgur.com/WbMHZqB.png` });
+                .setFooter({ text: `${get_message.author.tag} ~ solved the last emojiquiz! 😄`, iconURL: `https://cdn.discordapp.com/avatars/${get_message.author.id}/${get_message.author.avatar}.png?size=256`});
                 let emojiquiz_send = await get_message.channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});
 			
-            let getinfos = `UPDATE emojiquiz SET guildID = ${get_message.guildId}, guildName = '${get_message.guild.name}', channelID = ${get_message.channel.id}, emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_message.guildId}`;
+            let getinfos = `UPDATE emojiquiz SET guildID = ${get_message.guildId}, guildName = '${get_message.guild.name}', channelID = ${get_message.channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_message.guildId}`;
             get_connection.query(getinfos, function (err, data, result) {
             }); 
         } catch (error) {
