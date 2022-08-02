@@ -436,8 +436,19 @@ module.exports = class Emojiquiz {
                       });
                       const make_a_2 = async function() {
                         try {
-                        let get_it = await get_button.member.guild.channels.cache.get(row_nod.channelID).messages.fetch(row_nod.emojiMsgID);
-                        console.log(get_it.embeds[0].data.fields);
+                        if (row_nod.pendingData === null) {
+                            let pendingData = [];
+                            pendingData.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response})
+                            let getinfo = `UPDATE emojiquiz SET pendingData = '${JSON.stringify(pendingData)}' WHERE guildID = ${get_button.guildId}`;
+                            get_connection.query(getinfo, function (err, data, result) {
+                            }); 
+                        } else {
+                            let get_pending_data = JSON.parse(row_nod.pendingData);
+                            get_pending_data.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response});
+                            let getinfo = `UPDATE emojiquiz SET pendingData = '${JSON.stringify(get_pending_data)}' WHERE guildID = ${get_button.guildId}`;
+                            get_connection.query(getinfo, function (err, data, result) {
+                            });
+                        }
                         } catch (error) {
                             return;
                         } 
