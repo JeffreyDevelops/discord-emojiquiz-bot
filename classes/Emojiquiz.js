@@ -308,6 +308,7 @@ module.exports = class Emojiquiz {
 			row_nod = data[key];
 			});	
             const make_a = async function() {
+                try {
                 await get_button.channel.bulkDelete(row_nod.bulkDeleteCounter + 2);
 				let getinfo = `UPDATE emojiquiz SET bulkDeleteCounter = 0 WHERE guildID = ${get_button.guildId}`;
 				get_connection.query(getinfo, function (err, data, result) {
@@ -333,18 +334,19 @@ module.exports = class Emojiquiz {
                         )
                         .setColor('#FFFFFF')
                         .setFooter({ text: `${get_button.user.tag} ~ skipped the last emojiquiz! 👀`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
-                        try {
                         let emojiquiz_send = await get_button.channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});
                         let getinfos = `UPDATE emojiquiz SET guildID = ${get_button.guildId}, guildName = '${get_button.member.guild.name}', currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_button.guildId}`;
                         get_connection.query(getinfos, function (err, data, result) {
                     }); 
-                       
+                
                 } catch (error) {
-                    return;   
-                   } 
+                    return;
                 }
-                make_a();   
+                }
+                make_a(); 
+                  
                 });
+                
             }
         }
     }
@@ -359,14 +361,12 @@ module.exports = class Emojiquiz {
 			Object.keys(data).forEach(function(key) {
 			row_nod = data[key];
 			});	
-
+            const make_a = async function() {
+            try {
             let emojiquiz_data = JSON.parse(row_nod.data);
             let emojiquiz_currentEmoji = row_nod.currentEmoji;
-
             let searched_result = emojiquiz_data.find(e => e.word === emojiquiz_currentEmoji);
-            const make_a = async function() {
-                try {
-                    await get_button.reply({content: `The first letter is a **${searched_result.searched[0]}**.`, ephemeral: true});    
+            await get_button.reply({content: `The first letter is a **${searched_result.searched[0]}**.`, ephemeral: true});    
                 } catch (error) {
                    return; 
                 }
@@ -377,7 +377,8 @@ module.exports = class Emojiquiz {
 }
 }
     suggest_new_quiz() {
-        let get_button = this.button;     
+        let get_button = this.button;  
+        let get_connection = this.connection;   
         const make_a = async function() {
             try {
                 if (get_button.isButton()) {
@@ -427,6 +428,22 @@ module.exports = class Emojiquiz {
                       const hint_word_response = get_button.fields.getTextInputValue('hint_word_input');
                       const searched_word_response = get_button.fields.getTextInputValue('searched_word_input');
                       await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
+                      let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+                      get_connection.query(get_emojiquiz, function (err, data, result) {
+                      var row_nod;
+                      Object.keys(data).forEach(function(key) {
+                      row_nod = data[key];
+                      });
+                      const make_a_2 = async function() {
+                        try {
+                        let get_it = await get_button.member.guild.channels.cache.get(row_nod.channelID).messages.fetch(row_nod.emojiMsgID);
+                        console.log(get_it.embeds[0].data.fields);
+                        } catch (error) {
+                            return;
+                        } 
+                      }	
+                      make_a_2();
+                    });
                   }
                 } catch (error) {
                     return;
