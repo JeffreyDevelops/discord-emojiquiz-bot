@@ -3,7 +3,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
-    constructor(host, user, password, database, charset, guildID, guildName, word, hint, searched_word, interaction, channel, message) {
+    constructor(host, user, password, database, charset, guildID, guildName, word, hint, searched_word, interaction, channel, message, button) {
     this.host = host;
     this.user = user;
     this.password = password;
@@ -18,6 +18,7 @@ module.exports = class Emojiquiz {
     this.interaction = interaction;
     this.channel = channel;
     this.message = message;
+    this.button = button;
     }
 
     #createConnection() {
@@ -277,5 +278,73 @@ module.exports = class Emojiquiz {
 	});
     }
 
+    skip() {
+        let get_button = this.button;
+        let get_connection = this.connection;
+        const emojiquiz_btns = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Skip word')
+            .setCustomId('skip_word')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('⏩'),
+            new ButtonBuilder()
+            .setLabel('First Letter')
+            .setCustomId('first_letter')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('⚡'),
+            new ButtonBuilder()
+            .setLabel('Suggest new quiz')
+            .setCustomId('suggest_new_quiz')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji('🤳'),
+    );       
+        if (get_button.customId === 'skip_word') {
+            let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+            get_connection.query(get_emojiquiz, function (err, data, result) {
+			var row_nod;
+			Object.keys(data).forEach(function(key) {
+			row_nod = data[key];
+			});	
+            const make_a = async function() {
+                await get_button.channel.bulkDelete(row_nod.bulkDeleteCounter + 2);
+				let getinfo = `UPDATE emojiquiz SET bulkDeleteCounter = 0 WHERE guildID = ${get_button.guildId}`;
+				get_connection.query(getinfo, function (err, data, result) {
+				}); 
+                let emojiquiz = JSON.parse(row_nod.data);
+                            function shuffle(a) {
+                                var j, x, i;
+                                for (i = a.length - 1; i > 0; i--) {
+                                    j = Math.floor(Math.random() * (i + 1));
+                                    x = a[i];
+                                    a[i] = a[j];
+                                    a[j] = x;
+                                }
+                                return a;
+                            }
+                        shuffle(emojiquiz);
+                        const emoji_embed = new EmbedBuilder()
+                        .setTitle('**Emojiquiz**')
+                        .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                        .addFields(
+                        { name: '❓Searched word', value: emojiquiz[0].word, inline: true},
+                        { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
+                        )
+                        .setColor('#FFFFFF')
+                        .setFooter({ text: `${get_button.user.tag} ~ skipped the last emojiquiz! 👀`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                        try {
+                        let emojiquiz_send = await get_button.channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});
+                        let getinfos = `UPDATE emojiquiz SET guildID = ${get_button.guildId}, guildName = '${get_button.member.guild.name}', currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_button.guildId}`;
+                        get_connection.query(getinfos, function (err, data, result) {
+                    }); 
+                       
+                } catch (error) {
+                    return;   
+                   } 
+                }
+                make_a();   
+                });
+            }
+    }
 
 }
