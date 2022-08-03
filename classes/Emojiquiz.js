@@ -416,8 +416,18 @@ module.exports = class Emojiquiz {
                                 emojiquiz_moderation_btns.components[0].setDisabled(true);
                                 emojiquiz_moderation_btns.components[1].setDisabled(true);
                                 let get_msg = await get_button.member.guild.channels.cache.get(get_button.message.channelId).messages.fetch(get_button.message.id);
-                                await get_msg.edit({components: [emojiquiz_moderation_btns] });
-                                await get_button.reply({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});   
+                                const embed = new EmbedBuilder(get_msg.embeds[0].fields).addFields(
+                                {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
+                                {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
+                                {name: `**Status:**\n`, value: `${inlineCode("🟢 Accepted")}`, inline: false})
+                                .setTitle('**Emojiquiz**')
+                                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                                .setColor('#00f700')
+                                .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                                
+                                await get_button.deferUpdate()
+                                await get_button.editReply({embeds: [embed], components: [emojiquiz_moderation_btns] });
+                                await get_button.followUp({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});   
                             } catch (error) {
                                 return;
                             }
@@ -446,9 +456,20 @@ module.exports = class Emojiquiz {
                             emojiquiz_moderation_btns.components[0].setDisabled(true);
                             emojiquiz_moderation_btns.components[1].setDisabled(true);
                             let get_msg = await get_button.member.guild.channels.cache.get(get_button.message.channelId).messages.fetch(get_button.message.id);
-                            await get_msg.edit({components: [emojiquiz_moderation_btns] });
-                            await get_button.reply({content: `You declined **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ❌`, ephemeral: true});
+                            const embed = new EmbedBuilder(get_msg.embeds[0].fields).addFields(
+                                {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
+                                {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
+                                {name: `**Status:**\n`, value: `${inlineCode("🔴 Denied")}`, inline: false})
+                                .setTitle('**Emojiquiz**')
+                                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                                .setColor('#e71837')
+                                .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                                
+                            await get_button.deferUpdate()
+                            await get_button.editReply({embeds: [embed], components: [emojiquiz_moderation_btns] });
+                            await get_button.followUp({content: `You declined **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ❌`, ephemeral: true});
                             } catch (error) {
+                                console.log(error);
                                 return;
                             }  
                         }
