@@ -379,6 +379,17 @@ module.exports = class Emojiquiz {
 }
 }
     suggest_new_quiz() {
+        const emojiquiz_moderation_btns = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Decline')
+            .setCustomId('emojiquiz_decline')
+            .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+            .setLabel('Accept')
+            .setCustomId('emojiquiz_accept')
+            .setStyle(ButtonStyle.Success)     
+    );       
         let get_button = this.button;  
         let get_connection = this.connection;   
         const make_a = async function() {
@@ -424,12 +435,10 @@ module.exports = class Emojiquiz {
                      await get_button.showModal(modal);
                     }
                   }
-                
                   if (get_button.type === InteractionType.ModalSubmit) {
                       const emoji_word_response = get_button.fields.getTextInputValue('emoji_word_input');
                       const hint_word_response = get_button.fields.getTextInputValue('hint_word_input');
                       const searched_word_response = get_button.fields.getTextInputValue('searched_word_input');
-                      await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
                       let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
                       get_connection.query(get_emojiquiz2, function (err, data, result) {
                       var row_nod;
@@ -437,7 +446,19 @@ module.exports = class Emojiquiz {
                       row_nod = data[key];
                       });
                       const make_a_2 = async function() {
-                        try {
+                    try {
+                      await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
+                      const emoji_embed = new EmbedBuilder()
+                        .setTitle('**Emojiquiz**')
+                        .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                        .addFields(
+                        { name: '❓Searched word', value: emoji_word_response, inline: true},
+                        { name: '❗Hint', value: hint_word_response, inline: true },
+                        )
+                        .setColor('#FFFFFF')
+                        .setFooter({ text: `${get_button.user.tag} ~ searched: ${searched_word_response}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                        let get_it = await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
+                    //   console.log(get_it.embeds[0].data.fields);    
                         if (row_nod.pendingData === null) {
                             let pendingData = [];
                             pendingData.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response})
