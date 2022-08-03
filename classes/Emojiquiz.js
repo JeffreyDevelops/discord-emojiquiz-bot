@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { inlineCode, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
@@ -535,6 +536,7 @@ module.exports = class Emojiquiz {
                         .addFields(
                         { name: '❓Searched word', value: emoji_word_response, inline: true},
                         { name: '❗Hint', value: hint_word_response, inline: true },
+                        { name: 'Status', value: `${inlineCode("🟡 Pending")}`, inline: false}
                         )
                         .setColor('#FFFFFF')
                         .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
