@@ -395,8 +395,9 @@ module.exports = class Emojiquiz {
                       let get_pending_data = JSON.parse(row_nod.pendingData);
                       let get_current_data = JSON.parse(row_nod.data);
                       let get_new_data = get_pending_data.find(e => e.word === get_button.message.embeds[0].data.fields[0].value);
+                      let filtered = get_pending_data.filter(function(el) { return el.word != get_button.message.embeds[0].data.fields[0].value }); 
                       get_current_data.push(get_new_data);
-                      let getinfo = `UPDATE emojiquiz SET data = '${JSON.stringify(get_current_data)}' WHERE guildID = ${get_button.guildId}`;
+                      let getinfo = `UPDATE emojiquiz SET pendingData = '${JSON.stringify(filtered)}', data = '${JSON.stringify(get_current_data)}' WHERE guildID = ${get_button.guildId}`;
                             get_connection.query(getinfo, function (err, data, result) {
                         });
                         get_button.reply({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});
