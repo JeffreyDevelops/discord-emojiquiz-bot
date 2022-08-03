@@ -10,7 +10,8 @@ module.exports = {
     .setRequired(true))
     .addChannelOption(option =>
         option.setName('pending_channel')
-        .setDescription('Select channel where new emojiquiz suggestion should be sent to.')),
+        .setDescription('Select channel where new emojiquiz suggestion should be sent to.')
+        .setRequired(true)),
 	async execute(interaction) {
 		const emojiquiz_channel = await interaction.options.getChannel('channel');
         const emojiquiz_pending = await interaction.options.getChannel('pending_channel');

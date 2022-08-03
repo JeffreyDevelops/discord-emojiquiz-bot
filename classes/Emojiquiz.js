@@ -378,7 +378,37 @@ module.exports = class Emojiquiz {
     }
 }
 }
+
+
+    #suggest_new_quiz_moderation() {
+        let get_button = this.button;
+        let get_connection = this.connection;
+        if (this.button.customId === 'emojiquiz_accept') {
+            console.log(this.button);
+            const make_a = async function() {
+                let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+                      get_connection.query(get_emojiquiz2, function (err, data, result) {
+                      var row_nod;
+                      Object.keys(data).forEach(function(key) {
+                      row_nod = data[key];
+                      });
+                      let get_pending_data = JSON.parse(row_nod.pendingData);
+                      let get_current_data = JSON.parse(row_nod.data);
+                      let get_new_data = get_pending_data.find(e => e.word === get_button.message.embeds[0].data.fields[0].value);
+                      get_current_data.push(get_new_data);
+                      let getinfo = `UPDATE emojiquiz SET data = '${JSON.stringify(get_current_data)}' WHERE guildID = ${get_button.guildId}`;
+                            get_connection.query(getinfo, function (err, data, result) {
+                        });
+                        get_button.reply({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});
+                    });
+                console.log(get_button.message.embeds[0].data.footer.text);
+            }
+            make_a();
+        }
+    }
+
     suggest_new_quiz() {
+        this.#suggest_new_quiz_moderation();
         const emojiquiz_moderation_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
@@ -456,9 +486,8 @@ module.exports = class Emojiquiz {
                         { name: '❗Hint', value: hint_word_response, inline: true },
                         )
                         .setColor('#FFFFFF')
-                        .setFooter({ text: `${get_button.user.tag} ~ searched: ${searched_word_response}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
-                        let get_it = await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
-                    //   console.log(get_it.embeds[0].data.fields);    
+                        .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                        await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({content: `**Solution:** ${searched_word_response}`, embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
                         if (row_nod.pendingData === null) {
                             let pendingData = [];
                             pendingData.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response})
