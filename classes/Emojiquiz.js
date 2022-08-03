@@ -381,10 +381,20 @@ module.exports = class Emojiquiz {
 
 
     #suggest_new_quiz_moderation() {
+        const emojiquiz_moderation_btns = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Decline')
+            .setCustomId('emojiquiz_decline')
+            .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+            .setLabel('Accept')
+            .setCustomId('emojiquiz_accept')
+            .setStyle(ButtonStyle.Success)     
+    );       
         let get_button = this.button;
         let get_connection = this.connection;
         if (this.button.customId === 'emojiquiz_accept') {
-            console.log(this.button);
             const make_a = async function() {
                 let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
                       get_connection.query(get_emojiquiz2, function (err, data, result) {
@@ -400,9 +410,49 @@ module.exports = class Emojiquiz {
                       let getinfo = `UPDATE emojiquiz SET pendingData = '${JSON.stringify(filtered)}', data = '${JSON.stringify(get_current_data)}' WHERE guildID = ${get_button.guildId}`;
                             get_connection.query(getinfo, function (err, data, result) {
                         });
-                        get_button.reply({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});
+                        const make_a = async function() {
+                            try {
+                                emojiquiz_moderation_btns.components[0].setDisabled(true);
+                                emojiquiz_moderation_btns.components[1].setDisabled(true);
+                                let get_msg = await get_button.member.guild.channels.cache.get(get_button.message.channelId).messages.fetch(get_button.message.id);
+                                await get_msg.edit({components: [emojiquiz_moderation_btns] });
+                                await get_button.reply({content: `You successfully accepted **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ✅`, ephemeral: true});   
+                            } catch (error) {
+                                return;
+                            }
+                        }
+                        make_a();
                     });
-                console.log(get_button.message.embeds[0].data.footer.text);
+                
+            }
+            make_a();
+        } 
+        else if (get_button.customId === 'emojiquiz_decline') {
+            const make_a = async function() {
+                let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+                      get_connection.query(get_emojiquiz2, function (err, data, result) {
+                      var row_nod;
+                      Object.keys(data).forEach(function(key) {
+                      row_nod = data[key];
+                      });
+                      let get_pending_data = JSON.parse(row_nod.pendingData);
+                      let filtered = get_pending_data.filter(function(el) { return el.word != get_button.message.embeds[0].data.fields[0].value }); 
+                      let getinfo = `UPDATE emojiquiz SET pendingData = '${JSON.stringify(filtered)}' WHERE guildID = ${get_button.guildId}`;
+                            get_connection.query(getinfo, function (err, data, result) {
+                        });
+                        const make_a = async function() {
+                            try {
+                            emojiquiz_moderation_btns.components[0].setDisabled(true);
+                            emojiquiz_moderation_btns.components[1].setDisabled(true);
+                            let get_msg = await get_button.member.guild.channels.cache.get(get_button.message.channelId).messages.fetch(get_button.message.id);
+                            await get_msg.edit({components: [emojiquiz_moderation_btns] });
+                            await get_button.reply({content: `You declined **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ❌`, ephemeral: true});
+                            } catch (error) {
+                                return;
+                            }  
+                        }
+                        make_a();
+                    });
             }
             make_a();
         }
