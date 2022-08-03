@@ -3,7 +3,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuil
 const { EmbedBuilder } = require('discord.js');
 module.exports = class Emojiquiz {
 
-    constructor(host, user, password, database, charset, bigNumbers, guildID, guildName, word, hint, searched_word, interaction, channel, message, button) {
+    constructor(host, user, password, database, charset, bigNumbers, guildID, guildName, word, hint, searched_word, interaction, pending_channel, channel, message, button) {
     this.host = host;
     this.user = user;
     this.password = password;
@@ -17,6 +17,7 @@ module.exports = class Emojiquiz {
     this.searched_word = searched_word;
     this.interaction = interaction;
     this.channel = channel;
+    this.pending_channel = pending_channel;
     this.message = message;
     this.button = button;
     this.bigNumbers = bigNumbers;
@@ -36,7 +37,7 @@ module.exports = class Emojiquiz {
       ready() {
         this.#createConnection()
           // Create database
-          const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), channelID BIGINT(20), currentEmoji VARCHAR(255), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), pendingData longtext, data longtext, PRIMARY KEY (guildID))";
+          const query = "CREATE TABLE IF NOT EXISTS emojiquiz (guildID BIGINT(20), guildName VARCHAR(255), pendingChannelID BIGINT(20), channelID BIGINT(20), currentEmoji VARCHAR(255), emojiMsgID BIGINT(20), bulkDeleteCounter BIGINT(20), pendingData longtext, data longtext, PRIMARY KEY (guildID))";
           this.connection.query(query, function (err, result) {
               if (err) {
                   console.log("Something went wrong check your database details.");
@@ -108,6 +109,7 @@ module.exports = class Emojiquiz {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
         let get_channel = this.channel;
+        let get_pending_channel = this.pending_channel;
         const emojiquiz_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
@@ -162,7 +164,7 @@ module.exports = class Emojiquiz {
                     try {
                         await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
                         let emojiquiz_send = await get_channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});   
-                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_interaction.guildId}, guildName = '${get_interaction.member.guild.name}', channelID = ${get_channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_interaction.guildId}`;
+                        let getinfo = `UPDATE emojiquiz SET guildID = ${get_interaction.guildId}, guildName = '${get_interaction.member.guild.name}', pendingChannelID = ${get_pending_channel.id}, channelID = ${get_channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_interaction.guildId}`;
                         get_connection.query(getinfo, function (err, data, result) {
                         });  
                     } catch (error) {
