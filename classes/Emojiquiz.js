@@ -559,9 +559,9 @@ module.exports = class Emojiquiz {
                         { name: '❗Hint', value: hint_word_response, inline: true },
                         { name: 'Status', value: `${inlineCode("🟡 Pending")}`, inline: false}
                         )
-                        .setColor('#FFFFFF')
+                        .setColor('#9b8f22')
                         .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
-                        await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({content: `**Solution:** ${searched_word_response}`, embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
+                        await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({content: `${inlineCode("Solution")}: **${searched_word_response}**`, embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
                         if (row_nod.pendingData === null) {
                             let pendingData = [];
                             pendingData.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response})
