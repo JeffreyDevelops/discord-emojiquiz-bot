@@ -60,19 +60,21 @@ module.exports = class Emojiquiz {
                 row_nod = data[key];
                 config_array.push(row_nod.guildID);
         });
-        let get_data = JSON.parse(row_nod.data);
+        if (config_array.includes(get_interaction.guildId) === true) {
+            let get_data = JSON.parse(row_nod.data);
         
-        let find_duplicate = get_data.find(e => e.word === get_word || e.searched === get_searched_word);
-        if (find_duplicate !== undefined) {
-            try {
-                const make_a = async function() {
-                    await get_interaction.reply({content: emojiquizContent.alreadyExist.create_new_quiz_text, ephemeral: true});  
+            let find_duplicate = get_data.find(e => e.word === get_word || e.searched === get_searched_word);
+            if (find_duplicate !== undefined) {
+                try {
+                    const make_a = async function() {
+                        await get_interaction.reply({content: emojiquizContent.alreadyExist.create_new_quiz_text, ephemeral: true});  
+                    }
+                    make_a();
+                } catch (error) {
+                    return;
                 }
-                make_a();
-            } catch (error) {
                 return;
-            }
-            return;
+        }
         }    
         const make_a = async function() {
         const emoji_embed = new EmbedBuilder()
