@@ -42,6 +42,10 @@ exports.emojiquizContent = {
             style: ButtonStyle.Success
         }
     },
+    word_reaction: {
+        right_word: '<a:JeezyCheckmark:1004023251829276824>',
+        wrong_word: '<a:JeezyX:1004023250302533662>'
+    },
     first_letter_text: 'The first letter is a',
     moderation_status: {
         accept_text: '**Status:**\n',
