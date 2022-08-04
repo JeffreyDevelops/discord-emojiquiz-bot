@@ -420,9 +420,9 @@ module.exports = class Emojiquiz {
                                 {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
                                 {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
                                 {name: emojiquizContent.moderation_status.accept_text, value: emojiquizContent.moderation_status.accept_status, inline: false})
-                                .setTitle('**Emojiquiz**')
-                                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
-                                .setColor('#00f700')
+                                .setTitle(emojiquizContent.title)
+                                .setDescription(emojiquizContent.description)
+                                .setColor(emojiquizContent.moderation_status.accept_color)
                                 .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
                                 
                                 await get_button.deferUpdate()
@@ -460,9 +460,9 @@ module.exports = class Emojiquiz {
                                 {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
                                 {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
                                 {name: emojiquizContent.moderation_status.decline_text, value: emojiquizContent.moderation_status.decline_status, inline: false})
-                                .setTitle('**Emojiquiz**')
-                                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
-                                .setColor('#e71837')
+                                .setTitle(emojiquizContent.title)
+                                .setDescription(emojiquizContent.description)
+                                .setColor(emojiquizContent.moderation_status.decline_color)
                                 .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
                                 
                             await get_button.deferUpdate()

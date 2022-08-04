@@ -48,6 +48,8 @@ exports.emojiquizContent = {
         accept_status: inlineCode("🟢 Accepted"),
         decline_text: '**Status:**\n',
         decline_status: inlineCode("🔴 Denied"),
+        accept_color: '#00f700',
+        decline_color: '#e71837',
         pending_color: '#9b8f22',
         solution: inlineCode("Solution")
     },
