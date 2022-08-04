@@ -4,15 +4,13 @@ const { inlineCode, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { emojiquizContent } = require('./EmojiquizContent.js');
 module.exports = class Emojiquiz {
-    constructor(host, user, password, database, charset, bigNumbers, guildID, guildName, word, hint, searched_word, interaction, pending_channel, channel, message, button) {
+    constructor(host, user, password, database, charset, bigNumbers, word, hint, searched_word, interaction, pending_channel, channel, message, button) {
     this.host = host;
     this.user = user;
     this.password = password;
     this.database = database;
     this.charset = charset;
     this.connection = this.connection;
-    this.guildID = guildID;
-    this.guildName = guildName;
     this.word = word;
     this.hint = hint;
     this.searched_word = searched_word;
@@ -51,12 +49,10 @@ module.exports = class Emojiquiz {
     createEmojiQuiz() {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
-        let get_guildID = this.guildID;
-        let get_guildName = this.guildName;
         let get_word = this.word;
         let get_hint = this.hint;
         let get_searched_word = this.searched_word;
-        let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${this.guildID}`;
+        let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
         get_connection.query(get_emojiquiz, function (err, data, result) {
             var row_nod;
             var config_array = [];
@@ -90,14 +86,14 @@ module.exports = class Emojiquiz {
         .setFooter({ text: `${emojiquizContent.footer.text}`, iconURL: `${emojiquizContent.footer.iconURL}` });
         try {
             await get_interaction.reply({content: `${emojiquizContent.solution} **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
-                if (config_array.includes(get_guildID) === false) {
+                if (config_array.includes(get_interaction.guildId) === false) {
                     let emojiquiz = [];
                     emojiquiz.push({word: get_word, hint: get_hint, searched: get_searched_word});
-                    let getinfo = `INSERT INTO emojiquiz (guildID, guildName, data) VALUES (${get_guildID}, '${get_guildName}', '${JSON.stringify(emojiquiz)}')`;
+                    let getinfo = `INSERT INTO emojiquiz (guildID, guildName, data) VALUES (${get_interaction.guildId}, '${get_interaction.member.guild.name}', '${JSON.stringify(emojiquiz)}')`;
                     get_connection.query(getinfo, function (err, data, result) {
                     });  
                 } else {
-                    let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_guildID}`;
+                    let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_interaction.guildId}`;
                     get_connection.query(get_emojiquiz2, function (err, data, result) {
                     var row_nod2;
                     Object.keys(data).forEach(function(key) {
@@ -105,7 +101,7 @@ module.exports = class Emojiquiz {
                     });
                     let emojiquiz = JSON.parse(row_nod2.data);
                     emojiquiz.push({word: get_word, hint: get_hint, searched: get_searched_word});
-                    let getinfo = `UPDATE emojiquiz SET data = '${JSON.stringify(emojiquiz)}' WHERE guildID = ${get_guildID}`;
+                    let getinfo = `UPDATE emojiquiz SET data = '${JSON.stringify(emojiquiz)}' WHERE guildID = ${get_interaction.guildId}`;
                     get_connection.query(getinfo, function (err, data, result) {
                     }); 
                 }); 
