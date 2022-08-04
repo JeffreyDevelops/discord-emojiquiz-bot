@@ -46,6 +46,10 @@ exports.emojiquizContent = {
         right_word: '<a:JeezyCheckmark:1004023251829276824>',
         wrong_word: '<a:JeezyX:1004023250302533662>'
     },
+    alreadyExist: {
+        suggest_new_quiz_text: 'This word already exist.',
+        create_new_quiz_text: 'This word already exist.'
+    },
     first_letter_text: 'The first letter is a',
     moderation_status: {
         accept_text: '**Status:**\n',

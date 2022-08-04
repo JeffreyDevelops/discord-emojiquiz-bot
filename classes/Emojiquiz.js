@@ -68,8 +68,15 @@ module.exports = class Emojiquiz {
         
         let find_duplicate = get_data.find(e => e.word === get_word || e.searched === get_searched_word);
         if (find_duplicate !== undefined) {
-           get_interaction.reply({content: 'This word already exist.', ephemeral: true});
-            
+            try {
+                const make_a = async function() {
+                    await get_interaction.reply({content: emojiquizContent.alreadyExist.create_new_quiz_text, ephemeral: true});  
+                }
+                make_a();
+            } catch (error) {
+                return;
+            }
+            return;
         }    
         const make_a = async function() {
         const emoji_embed = new EmbedBuilder()
@@ -559,7 +566,7 @@ module.exports = class Emojiquiz {
         
                         let find_duplicate = get_data.find(e => e.word === emoji_word_response || e.searched === searched_word_response);
                         if (find_duplicate !== undefined) {
-                            return await get_button.reply({content: 'This word already exist.', ephemeral: true});
+                            return await get_button.reply({content: emojiquizContent.alreadyExist.suggest_new_quiz_text, ephemeral: true});
                         }    
                       await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
                       const emoji_embed = new EmbedBuilder()
