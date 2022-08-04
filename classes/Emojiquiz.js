@@ -2,8 +2,8 @@ var mysql = require("mysql");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { inlineCode, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
+const { emojiquizContent } = require('./EmojiquizContent.js');
 module.exports = class Emojiquiz {
-
     constructor(host, user, password, database, charset, bigNumbers, guildID, guildName, word, hint, searched_word, interaction, pending_channel, channel, message, button) {
     this.host = host;
     this.user = user;
@@ -68,16 +68,16 @@ module.exports = class Emojiquiz {
 
         const make_a = async function() {
         const emoji_embed = new EmbedBuilder()
-        .setTitle('**Emojiquiz**')
-        .setDescription(`If you have any issues to solve that emojiquiz then you can click the buttons to get some help.`)
+        .setTitle(`${emojiquizContent.title}`)
+        .setDescription(`${emojiquizContent.description}`)
         .addFields(
-            { name: '❓Searched word', value: get_word, inline: true},
-            { name: '❗Hint', value: get_hint, inline: true },
+            { name: `${emojiquizContent.fields.first}`, value: get_word, inline: true},
+            { name: `${emojiquizContent.fields.second}`, value: get_hint, inline: true },
         )
-        .setColor('#FFFFFF')
-        .setFooter({ text: 'Emojiquiz ~ solved the last emojiquiz! 😄', iconURL: `https://i.imgur.com/OHN3crW.png` });
+        .setColor(`${emojiquizContent.color}`)
+        .setFooter({ text: `${emojiquizContent.footer.text}`, iconURL: `${emojiquizContent.footer.iconURL}` });
         try {
-            await get_interaction.reply({content: `That's how it will look like!\nSearched word: **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
+            await get_interaction.reply({content: `${emojiquizContent.solution} **${get_searched_word}**`, embeds: [emoji_embed], ephemeral: true});   
                 if (config_array.includes(get_guildID) === false) {
                     let emojiquiz = [];
                     emojiquiz.push({word: get_word, hint: get_hint, searched: get_searched_word});
@@ -114,20 +114,20 @@ module.exports = class Emojiquiz {
         const emojiquiz_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-            .setLabel('Skip word')
+            .setLabel(emojiquizContent.buttons.skip.label)
             .setCustomId('skip_word')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⏩'),
+            .setStyle(emojiquizContent.buttons.skip.style)
+            .setEmoji(emojiquizContent.buttons.skip.emoji),
             new ButtonBuilder()
-            .setLabel('First Letter')
+            .setLabel(emojiquizContent.buttons.first_letter.label)
             .setCustomId('first_letter')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⚡'),
+            .setStyle(emojiquizContent.buttons.first_letter.style)
+            .setEmoji(emojiquizContent.buttons.first_letter.emoji),
             new ButtonBuilder()
-            .setLabel('Suggest new quiz')
+            .setLabel(emojiquizContent.buttons.suggest_new_quiz.label)
             .setCustomId('suggest_new_quiz')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('🤳'),
+            .setStyle(emojiquizContent.buttons.suggest_new_quiz.style)
+            .setEmoji(emojiquizContent.buttons.suggest_new_quiz.emoji),
     );          
                 let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
                 this.connection.query(get_emojiquiz, function (err, data, result) {
@@ -153,14 +153,14 @@ module.exports = class Emojiquiz {
                     shuffle(emojiquiz);
     
                 const emoji_embed = new EmbedBuilder()
-                .setTitle('**Emojiquiz**')
-                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                .setTitle(`${emojiquizContent.title}`)
+                .setDescription(`${emojiquizContent.description}`)
                 .addFields(
-                { name: '❓Searched word', value: emojiquiz[0].word, inline: true},
-                { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
+                { name: `${emojiquizContent.fields.first}`, value: emojiquiz[0].word, inline: true},
+                { name: `${emojiquizContent.fields.second}`, value: emojiquiz[0].hint, inline: true },
                 )
-                .setColor('#FFFFFF')
-                .setFooter({ text: 'Emojiquiz ~ solved the last emojiquiz! 😄', iconURL: `https://i.imgur.com/OHN3crW.png` });
+                .setColor(`${emojiquizContent.color}`)
+                .setFooter({ text: `${emojiquizContent.footer.text}`, iconURL: `${emojiquizContent.footer.iconURL}` });
                 
                     try {
                         await get_interaction.reply({content: `Successfully setuped emojiquiz. <:Jeezy:1003070707950944378>`, ephemeral: true})
@@ -193,21 +193,21 @@ module.exports = class Emojiquiz {
         const emojiquiz_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-            .setLabel('Skip word')
+            .setLabel(emojiquizContent.buttons.skip.label)
             .setCustomId('skip_word')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⏩'),
+            .setStyle(emojiquizContent.buttons.skip.style)
+            .setEmoji(emojiquizContent.buttons.skip.emoji),
             new ButtonBuilder()
-            .setLabel('First Letter')
+            .setLabel(emojiquizContent.buttons.first_letter.label)
             .setCustomId('first_letter')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⚡'),
+            .setStyle(emojiquizContent.buttons.first_letter.style)
+            .setEmoji(emojiquizContent.buttons.first_letter.emoji),
             new ButtonBuilder()
-            .setLabel('Suggest new quiz')
+            .setLabel(emojiquizContent.buttons.suggest_new_quiz.label)
             .setCustomId('suggest_new_quiz')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('🤳'),
-    );          
+            .setStyle(emojiquizContent.buttons.suggest_new_quiz.style)
+            .setEmoji(emojiquizContent.buttons.suggest_new_quiz.emoji),
+    );         
         let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_message.guildId}`;
         this.connection.query(get_emojiquiz, function (err, data, result) {
         var row_nod;
@@ -254,14 +254,14 @@ module.exports = class Emojiquiz {
                     }
                     shuffle(emojiquiz);
                 const emoji_embed = new EmbedBuilder()
-                .setTitle('**Emojiquiz**')
-                .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                .setTitle(`${emojiquizContent.title}`)
+                .setDescription(`${emojiquizContent.description}`)
                 .addFields(
-                { name: '❓Searched word', value: emojiquiz[0].word, inline: true},
-                { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
+                { name: `${emojiquizContent.fields.first}`, value: emojiquiz[0].word, inline: true},
+                { name: `${emojiquizContent.fields.second}`, value: emojiquiz[0].hint, inline: true },
                 )
-                .setColor('#FFFFFF')
-                .setFooter({ text: `${get_message.author.tag} ~ solved the last emojiquiz! 😄`, iconURL: `https://cdn.discordapp.com/avatars/${get_message.author.id}/${get_message.author.avatar}.png?size=256`});
+                .setColor(`${emojiquizContent.color}`)
+                .setFooter({ text: `${get_message.author.tag} ${emojiquizContent.footer.textonstart}`, iconURL: `https://cdn.discordapp.com/avatars/${get_message.author.id}/${get_message.author.avatar}.png?size=256`});
                 let emojiquiz_send = await get_message.channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});
 			
             let getinfos = `UPDATE emojiquiz SET guildID = ${get_message.guildId}, guildName = '${get_message.guild.name}', channelID = ${get_message.channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_message.guildId}`;
@@ -287,21 +287,21 @@ module.exports = class Emojiquiz {
         const emojiquiz_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-            .setLabel('Skip word')
+            .setLabel(emojiquizContent.buttons.skip.label)
             .setCustomId('skip_word')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⏩'),
+            .setStyle(emojiquizContent.buttons.skip.style)
+            .setEmoji(emojiquizContent.buttons.skip.emoji),
             new ButtonBuilder()
-            .setLabel('First Letter')
+            .setLabel(emojiquizContent.buttons.first_letter.label)
             .setCustomId('first_letter')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⚡'),
+            .setStyle(emojiquizContent.buttons.first_letter.style)
+            .setEmoji(emojiquizContent.buttons.first_letter.emoji),
             new ButtonBuilder()
-            .setLabel('Suggest new quiz')
+            .setLabel(emojiquizContent.buttons.suggest_new_quiz.label)
             .setCustomId('suggest_new_quiz')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('🤳'),
-    );       
+            .setStyle(emojiquizContent.buttons.suggest_new_quiz.style)
+            .setEmoji(emojiquizContent.buttons.suggest_new_quiz.emoji),
+    );     
         if (get_button.isButton()) {
         if (get_button.customId === 'skip_word') {
             let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
@@ -329,14 +329,14 @@ module.exports = class Emojiquiz {
                             }
                         shuffle(emojiquiz);
                         const emoji_embed = new EmbedBuilder()
-                        .setTitle('**Emojiquiz**')
-                        .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                        .setTitle(emojiquizContent.title)
+                        .setDescription(emojiquizContent.description)
                         .addFields(
-                        { name: '❓Searched word', value: emojiquiz[0].word, inline: true},
-                        { name: '❗Hint', value: emojiquiz[0].hint, inline: true },
+                        { name: emojiquizContent.fields.first, value: emojiquiz[0].word, inline: true},
+                        { name: emojiquizContent.fields.second, value: emojiquiz[0].hint, inline: true },
                         )
-                        .setColor('#FFFFFF')
-                        .setFooter({ text: `${get_button.user.tag} ~ skipped the last emojiquiz! 👀`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
+                        .setColor(emojiquizContent.color)
+                        .setFooter({ text: `${get_button.user.tag} ${emojiquizContent.footer.skip_text}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
                         let emojiquiz_send = await get_button.channel.send({embeds: [emoji_embed], components: [emojiquiz_btns]});
                         let getinfos = `UPDATE emojiquiz SET guildID = ${get_button.guildId}, guildName = '${get_button.member.guild.name}', currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_button.guildId}`;
                         get_connection.query(getinfos, function (err, data, result) {
@@ -369,7 +369,7 @@ module.exports = class Emojiquiz {
             let emojiquiz_data = JSON.parse(row_nod.data);
             let emojiquiz_currentEmoji = row_nod.currentEmoji;
             let searched_result = emojiquiz_data.find(e => e.word === emojiquiz_currentEmoji);
-            await get_button.reply({content: `The first letter is a **${searched_result.searched[0]}**.`, ephemeral: true});    
+            await get_button.reply({content: `${emojiquizContent.first_letter_text} **${searched_result.searched[0]}**.`, ephemeral: true});    
                 } catch (error) {
                    return; 
                 }
@@ -385,13 +385,13 @@ module.exports = class Emojiquiz {
         const emojiquiz_moderation_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-            .setLabel('Decline')
+            .setLabel(emojiquizContent.buttons.emojiquiz_decline.label)
             .setCustomId('emojiquiz_decline')
-            .setStyle(ButtonStyle.Danger),
+            .setStyle(emojiquizContent.buttons.emojiquiz_decline.style),
             new ButtonBuilder()
-            .setLabel('Accept')
+            .setLabel(emojiquizContent.buttons.emojiquiz_accept.label)
             .setCustomId('emojiquiz_accept')
-            .setStyle(ButtonStyle.Success)     
+            .setStyle(emojiquizContent.buttons.emojiquiz_accept.style)     
     );       
         let get_button = this.button;
         let get_connection = this.connection;
@@ -419,7 +419,7 @@ module.exports = class Emojiquiz {
                                 const embed = new EmbedBuilder(get_msg.embeds[0].fields).addFields(
                                 {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
                                 {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
-                                {name: `**Status:**\n`, value: `${inlineCode("🟢 Accepted")}`, inline: false})
+                                {name: emojiquizContent.moderation_status.accept_text, value: emojiquizContent.moderation_status.accept_status, inline: false})
                                 .setTitle('**Emojiquiz**')
                                 .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
                                 .setColor('#00f700')
@@ -459,7 +459,7 @@ module.exports = class Emojiquiz {
                             const embed = new EmbedBuilder(get_msg.embeds[0].fields).addFields(
                                 {name: get_msg.embeds[0].fields[0].name, value: get_msg.embeds[0].fields[0].value, inline: true},
                                 {name: get_msg.embeds[0].fields[1].name, value: get_msg.embeds[0].fields[1].value, inline: true},
-                                {name: `**Status:**\n`, value: `${inlineCode("🔴 Denied")}`, inline: false})
+                                {name: emojiquizContent.moderation_status.decline_text, value: emojiquizContent.moderation_status.decline_status, inline: false})
                                 .setTitle('**Emojiquiz**')
                                 .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
                                 .setColor('#e71837')
@@ -485,13 +485,13 @@ module.exports = class Emojiquiz {
         const emojiquiz_moderation_btns = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
-            .setLabel('Decline')
+            .setLabel(emojiquizContent.buttons.emojiquiz_decline.label)
             .setCustomId('emojiquiz_decline')
-            .setStyle(ButtonStyle.Danger),
+            .setStyle(emojiquizContent.buttons.emojiquiz_decline.style),
             new ButtonBuilder()
-            .setLabel('Accept')
+            .setLabel(emojiquizContent.buttons.emojiquiz_accept.label)
             .setCustomId('emojiquiz_accept')
-            .setStyle(ButtonStyle.Success)     
+            .setStyle(emojiquizContent.buttons.emojiquiz_accept.style)     
     );       
         let get_button = this.button;  
         let get_connection = this.connection;   
@@ -501,36 +501,36 @@ module.exports = class Emojiquiz {
                     if (get_button.customId === 'suggest_new_quiz') {
                       const modal = new ModalBuilder()
                         .setCustomId('emojiquiz')
-                        .setTitle('Emojiquiz suggestion')
+                        .setTitle(emojiquizContent.suggest_new_quiz_pop_up.title)
                         .addComponents([
                           new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                               .setCustomId('emoji_word_input')
-                              .setLabel('Word in emoji')
+                              .setLabel(emojiquizContent.suggest_new_quiz_pop_up.emoji_word.label)
                               .setStyle(TextInputStyle.Short)
                               .setMinLength(1)
                               .setMaxLength(100)
-                              .setPlaceholder('Enter word in emojis.')
+                              .setPlaceholder(emojiquizContent.suggest_new_quiz_pop_up.emoji_word.placeholder)
                               .setRequired(true),
                           ),
                           new ActionRowBuilder().addComponents(
                           new TextInputBuilder()
                           .setCustomId('hint_word_input')
-                          .setLabel('Hint')
+                          .setLabel(emojiquizContent.suggest_new_quiz_pop_up.emoji_hint.label)
                           .setStyle(TextInputStyle.Short)
                           .setMinLength(1)
                           .setMaxLength(100)
-                          .setPlaceholder('Give a hint.')
+                          .setPlaceholder(emojiquizContent.suggest_new_quiz_pop_up.emoji_hint.placeholder)
                           .setRequired(true)
                           ),
                           new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                             .setCustomId('searched_word_input')
-                            .setLabel('Searched Word')
+                            .setLabel(emojiquizContent.suggest_new_quiz_pop_up.emoji_searched.label)
                             .setStyle(TextInputStyle.Short)
                             .setMinLength(1)
                             .setMaxLength(100)
-                            .setPlaceholder('Enter the searched word.')
+                            .setPlaceholder(emojiquizContent.suggest_new_quiz_pop_up.emoji_searched.placeholder)
                             .setRequired(true)
                             ),
                         ]);
@@ -552,16 +552,16 @@ module.exports = class Emojiquiz {
                     try {
                       await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
                       const emoji_embed = new EmbedBuilder()
-                        .setTitle('**Emojiquiz**')
-                        .setDescription('If you have any issues to solve that emojiquiz then you can click the buttons to get some help.')
+                        .setTitle(emojiquizContent.title)
+                        .setDescription(emojiquizContent.description)
                         .addFields(
-                        { name: '❓Searched word', value: emoji_word_response, inline: true},
-                        { name: '❗Hint', value: hint_word_response, inline: true },
-                        { name: 'Status', value: `${inlineCode("🟡 Pending")}`, inline: false}
+                        { name: emojiquizContent.fields.first, value: emoji_word_response, inline: true},
+                        { name: emojiquizContent.fields.second, value: hint_word_response, inline: true },
+                        { name: emojiquizContent.fields.status_text, value: emojiquizContent.fields.status, inline: false}
                         )
-                        .setColor('#9b8f22')
+                        .setColor(emojiquizContent.moderation_status.pending_color)
                         .setFooter({ text: `${get_button.user.tag}`, iconURL: `https://cdn.discordapp.com/avatars/${get_button.user.id}/${get_button.user.avatar}.png?size=256`});
-                        await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({content: `${inlineCode("Solution")}: **${searched_word_response}**`, embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
+                        await get_button.member.guild.channels.cache.get(row_nod.pendingChannelID).send({content: `${emojiquizContent.moderation_status.solution}: **${searched_word_response}**`, embeds: [emoji_embed], components: [emojiquiz_moderation_btns]});
                         if (row_nod.pendingData === null) {
                             let pendingData = [];
                             pendingData.push({word: emoji_word_response, hint: hint_word_response, searched: searched_word_response})
