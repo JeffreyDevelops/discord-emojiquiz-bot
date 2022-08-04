@@ -6,7 +6,7 @@ module.exports = {
 	execute(client) {
 		emojiquiz.ready();
 		setInterval(() => {
-		const arr = ['Coded by Jeezy#1111', 'JeezyDevelopment package', 'discord-emojiquiz'];
+		const arr = ['Coded by Jeezy#1111', 'JeezyDevelopment', 'release tmr'];
 		let shuffledNumbers = arr.sort(function () {
 			return Math.random() - 0.5;
 		  });
