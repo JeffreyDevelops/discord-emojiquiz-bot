@@ -48,7 +48,6 @@ module.exports = class Emojiquiz {
             });
       }
 
-
     createEmojiQuiz() {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
@@ -65,7 +64,13 @@ module.exports = class Emojiquiz {
                 row_nod = data[key];
                 config_array.push(row_nod.guildID);
         });
-
+        let get_data = JSON.parse(row_nod.data);
+        
+        let find_duplicate = get_data.find(e => e.word === get_word || e.searched === get_searched_word);
+        if (find_duplicate !== undefined) {
+           get_interaction.reply({content: 'This word already exist.', ephemeral: true});
+            
+        }    
         const make_a = async function() {
         const emoji_embed = new EmbedBuilder()
         .setTitle(`${emojiquizContent.title}`)
