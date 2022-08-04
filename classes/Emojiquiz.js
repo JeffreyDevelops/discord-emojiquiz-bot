@@ -555,6 +555,12 @@ module.exports = class Emojiquiz {
                       });
                       const make_a_2 = async function() {
                     try {
+                        let get_data = JSON.parse(row_nod.data);
+        
+                        let find_duplicate = get_data.find(e => e.word === emoji_word_response || e.searched === searched_word_response);
+                        if (find_duplicate !== undefined) {
+                            return await get_button.reply({content: 'This word already exist.', ephemeral: true});
+                        }    
                       await get_button.reply({content: `Your emojiquiz suggestion is submitted!\n**word:** ${emoji_word_response}\n**hint:** ${hint_word_response}\n**searched:** ${searched_word_response}`, ephemeral: true});
                       const emoji_embed = new EmbedBuilder()
                         .setTitle(emojiquizContent.title)
