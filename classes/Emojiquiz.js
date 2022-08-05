@@ -4,7 +4,7 @@ const { inlineCode, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { emojiquizContent } = require('./EmojiquizContent.js');
 module.exports = class Emojiquiz {
-    constructor(host, user, password, database, charset, bigNumbers, word, hint, searched_word, interaction, pending_channel, channel, message, button) {
+    constructor(host, user, password, database, charset, bigNumbers, word, hint, searched_word, interaction, pending_channel, channel, message, button, delete_emojiquiz) {
     this.host = host;
     this.user = user;
     this.password = password;
@@ -20,6 +20,7 @@ module.exports = class Emojiquiz {
     this.message = message;
     this.button = button;
     this.bigNumbers = bigNumbers;
+    this.delete = delete_emojiquiz;
     }
 
     #createConnection() {
@@ -115,6 +116,47 @@ module.exports = class Emojiquiz {
         make_a();
     });
 }
+
+    deleteEmojiQuiz() {
+        let get_connection = this.connection;
+        let get_interaction = this.interaction;
+        let get_delete_emoji = this.delete;
+        let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
+                this.connection.query(get_emojiquiz, function (err, data, result) {
+                    var row_nod;
+                    var config_array = [];
+                    Object.keys(data).forEach(function(key) {
+                        row_nod = data[key];
+                        config_array.push(row_nod.guildID);
+                });
+
+                if (config_array.includes(get_interaction.guildId) === false) return get_interaction.reply({content: "Nothing in the found database", ephemeral: true});
+
+                let get_data = JSON.parse(row_nod.data);
+
+                let filtered = get_data.filter(function(el) { return el.word != get_delete_emoji }); 
+                let update_data = `UPDATE emojiquiz SET data = '${JSON.stringify(filtered)}' WHERE guildID = ${get_interaction.guildId}`;
+                get_connection.query(update_data, function (err, data, result) { 
+                });
+                const make_a = async function() {
+                try {
+                const embed = new EmbedBuilder()
+                .setColor('#FFFFFF')
+                .setDescription(`Successfully reseted ${get_delete_emoji}!`)
+                .setFooter({ text: 'Emojiquiz', iconURL: emojiquizContent.footer.iconURL});
+                let new_data = get_data.find(e => e.word === get_delete_emoji);
+                if (new_data !== undefined) {
+                    await get_interaction.reply({embeds: [embed], ephemeral: true});
+                }
+                embed.setDescription(`${get_delete_emoji} has never been setuped!`);
+                await get_interaction.reply({embeds: [embed], ephemeral: true});
+                } catch (error) {
+                return;
+                    }
+                }
+                make_a();
+            });
+    }
 
     setup() {
         let get_connection = this.connection;
