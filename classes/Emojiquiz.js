@@ -1,5 +1,5 @@
 var mysql = require("mysql");
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits } = require('discord.js');
 const { inlineCode, codeBlock } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const { emojiquizContent } = require('./EmojiquizContent.js');
@@ -485,7 +485,12 @@ module.exports = class Emojiquiz {
     );       
         let get_button = this.button;
         let get_connection = this.connection;
+        let moderate_roles = emojiquizContent.moderation_roles.roles;
+        let get_role = get_button.member.roles.cache.map(role => role.name);
         if (this.button.customId === 'emojiquiz_accept') {
+            if (get_role.some(el => moderate_roles.includes(el)) === false && get_button.member.permissions.has([PermissionFlagsBits.Administrator]) === false) {
+                return;  
+            };
             const make_a = async function() {
                 let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
                       get_connection.query(get_emojiquiz2, function (err, data, result) {
@@ -529,6 +534,9 @@ module.exports = class Emojiquiz {
             make_a();
         } 
         else if (get_button.customId === 'emojiquiz_decline') {
+            if (get_role.some(el => moderate_roles.includes(el)) === false && get_button.member.permissions.has([PermissionFlagsBits.Administrator]) === false) {
+                return;  
+            };
             const make_a = async function() {
                 let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
                       get_connection.query(get_emojiquiz2, function (err, data, result) {

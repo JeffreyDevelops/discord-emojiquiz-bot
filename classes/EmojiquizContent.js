@@ -61,6 +61,9 @@ exports.emojiquizContent = {
         pending_color: '#9b8f22',
         solution: inlineCode("Solution")
     },
+    moderation_roles: {
+        roles: ["gold", "bronze"]
+    },
     suggest_new_quiz_pop_up: {
         title: 'Emojiquiz suggestion',
         emoji_word: {
