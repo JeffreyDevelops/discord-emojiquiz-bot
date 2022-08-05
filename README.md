@@ -7,6 +7,7 @@
 <ul>
 <li><code>emojiquiz-create</code></li>
 <li><code>emojiquiz-setup</code></li>
+<li><code>emojiquiz-delete</code></li>
 </ul>
 <img src="https://user-images.githubusercontent.com/88632169/182969775-4453fc67-f233-4990-80e7-f04508c3890a.png"></img>
 <img src="https://user-images.githubusercontent.com/88632169/182969840-d48d7643-7736-4a3e-8f35-76fe68af680f.png"></img>
