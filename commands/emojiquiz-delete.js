@@ -13,5 +13,5 @@ module.exports = {
         emojiquiz.interaction = interaction;
         emojiquiz.delete = emojiquiz_delete;
         emojiquiz.deleteEmojiQuiz();
-	},
+	}
 };

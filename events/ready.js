@@ -14,5 +14,5 @@ module.exports = {
 		client.user.setPresence({ activities: [{ type: ActivityType.Listening, name: shuffledNumbers[0] }], status: 'online' });
 	}, 60000);
 		console.log(`Ready! Logged in as ${client.user.tag}`);
-	},
+	}
 };

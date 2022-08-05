@@ -20,5 +20,5 @@ module.exports = {
         emojiquiz.interaction = interaction;
         emojiquiz.setup();
 
-	},
+	}
 };
