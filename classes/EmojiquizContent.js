@@ -62,7 +62,7 @@ exports.emojiquizContent = {
         solution: inlineCode("Solution")
     },
     moderation_roles: {
-        roles: ["gold", "bronze"]
+        roles: ["emojiquiz", "jeezyDevelopment"]
     },
     suggest_new_quiz_pop_up: {
         title: 'Emojiquiz suggestion',
