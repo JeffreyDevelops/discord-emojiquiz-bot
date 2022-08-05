@@ -309,7 +309,7 @@ module.exports = class Emojiquiz {
                 }
                 make_a();
             
-			let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_message.guildId}`;
+			let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE guildID = ${get_message.guildId}`;
             get_connection.query(get_emojiquiz2, function (err, data, result) {
 				var row_nod2;
 				Object.keys(data).forEach(function(key) {
@@ -394,7 +394,7 @@ module.exports = class Emojiquiz {
     );     
         if (get_button.isButton()) {
         if (get_button.customId === 'skip_word') {
-            let get_emojiquiz = `SELECT * FROM emojiquiz WHERE ${get_button.guildId}`;
+            let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_button.guildId}`;
             get_connection.query(get_emojiquiz, function (err, data, result) {
 			var row_nod;
 			Object.keys(data).forEach(function(key) {
