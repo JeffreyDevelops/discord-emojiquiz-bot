@@ -43,8 +43,8 @@ exports.emojiquizContent = {
         }
     },
     word_reaction: {
-        right_word: '<a:JeezyCheckmark:1004023251829276824>',
-        wrong_word: '<a:JeezyX:1004023250302533662>'
+        right_word: '✅',
+        wrong_word: '❌'
     },
     alreadyExist: {
         suggest_new_quiz_text: 'This word already exist.',

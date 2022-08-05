@@ -158,6 +158,25 @@ module.exports = class Emojiquiz {
             });
     }
 
+    resetEmojiQuiz() {
+        let get_interaction = this.interaction;
+        let emojiquiz_delete = `DELETE FROM emojiquiz WHERE guildID = ${this.interaction.guildId}`;
+        this.connection.query(emojiquiz_delete, function (err, data, result) {
+        var row_nod;
+        Object.keys(data).forEach(function(key) {
+        row_nod = data[key];
+        });
+        const make_a = async function() {
+            try {
+                await get_interaction.reply({content: "You successfully reseted the bot. ✅", ephemeral: true});
+            } catch (error) {
+                return;
+            }
+        }
+        make_a();
+        });
+    }
+
     setup() {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
@@ -280,7 +299,16 @@ module.exports = class Emojiquiz {
             let get_current_emoji = row_nod.currentEmoji;
             let new_get_searched_word = get_searched_word.find(e => e.word === get_current_emoji);
 			if (new_get_searched_word.searched.toLowerCase() === get_message.content.toLowerCase()) {
-			get_message_content.react(emojiquizContent.word_reaction.right_word);
+            
+                const make_a = async function() {
+                    try {
+                    await get_message_content.react(emojiquizContent.word_reaction.right_word); 
+                } catch (error) {
+                    return;
+                }
+                }
+                make_a();
+            
 			let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE ${get_message.guildId}`;
             get_connection.query(get_emojiquiz2, function (err, data, result) {
 				var row_nod2;
@@ -326,7 +354,17 @@ module.exports = class Emojiquiz {
         make_a();
 		});
 			} else {
-				get_message_content.react(emojiquizContent.word_reaction.wrong_word);
+                
+                    const make_a = async function() {
+                        try {
+                        await get_message_content.react(emojiquizContent.word_reaction.wrong_word);
+                    } catch (error) {
+                        return;
+                    }
+                    }
+                    make_a();
+               
+				
 			}
 		}
 
