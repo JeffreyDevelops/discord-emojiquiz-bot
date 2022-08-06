@@ -40,7 +40,7 @@ module.exports = {
         });
     }
 
-    console.log(emojiquiz_channel);
+    
         emojiquiz.pending_channel = emojiquiz_pending;
         emojiquiz.channel = emojiquiz_channel;
         emojiquiz.interaction = interaction;

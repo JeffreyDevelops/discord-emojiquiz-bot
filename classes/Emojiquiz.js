@@ -121,6 +121,24 @@ module.exports = class Emojiquiz {
         let get_connection = this.connection;
         let get_interaction = this.interaction;
         let get_delete_emoji = this.delete;
+        const emojiquiz_btns = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel(emojiquizContent.buttons.skip.label)
+            .setCustomId('skip_word')
+            .setStyle(emojiquizContent.buttons.skip.style)
+            .setEmoji(emojiquizContent.buttons.skip.emoji),
+            new ButtonBuilder()
+            .setLabel(emojiquizContent.buttons.first_letter.label)
+            .setCustomId('first_letter')
+            .setStyle(emojiquizContent.buttons.first_letter.style)
+            .setEmoji(emojiquizContent.buttons.first_letter.emoji),
+            new ButtonBuilder()
+            .setLabel(emojiquizContent.buttons.suggest_new_quiz.label)
+            .setCustomId('suggest_new_quiz')
+            .setStyle(emojiquizContent.buttons.suggest_new_quiz.style)
+            .setEmoji(emojiquizContent.buttons.suggest_new_quiz.emoji),
+    );         
         let get_emojiquiz = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
                 this.connection.query(get_emojiquiz, function (err, data, result) {
                     var row_nod;
@@ -138,6 +156,72 @@ module.exports = class Emojiquiz {
                 let update_data = `UPDATE emojiquiz SET data = '${JSON.stringify(filtered)}' WHERE guildID = ${get_interaction.guildId}`;
                 get_connection.query(update_data, function (err, data, result) { 
                 });
+
+                let get_emojiquiz2 = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
+                get_connection.query(get_emojiquiz2, function (err, data, result) {
+				var row_nod2;
+				Object.keys(data).forEach(function(key) {
+					row_nod2 = data[key];
+			});	
+			const make_a = async function() {
+			try {
+				await get_interaction.guild.channels.cache.get(row_nod2.channelID).bulkDelete(row_nod2.bulkDeleteCounter + 2);
+				let getinfo = `UPDATE emojiquiz SET bulkDeleteCounter = 0 WHERE guildID = ${get_interaction.guildId}`;
+				get_connection.query(getinfo, function (err, data, result) {
+				}); 
+                    let emojiquiz = JSON.parse(row_nod.data);
+                    function shuffle(a) {
+                        var j, x, i;
+                        for (i = a.length - 1; i > 0; i--) {
+                            j = Math.floor(Math.random() * (i + 1));
+                            x = a[i];
+                            a[i] = a[j];
+                            a[j] = x;
+                        }
+                        return a;
+                    }
+                    shuffle(emojiquiz);
+                const emoji_embed = new EmbedBuilder()
+                .setTitle(`${emojiquizContent.title}`)
+                .setDescription(`${emojiquizContent.description}`)
+                .addFields(
+                { name: `${emojiquizContent.fields.first}`, value: emojiquiz[0].word, inline: true},
+                { name: `${emojiquizContent.fields.second}`, value: emojiquiz[0].hint, inline: true },
+                )
+                .setColor(`${emojiquizContent.color}`)
+                .setFooter({ text: `${get_interaction.user.tag} ${emojiquizContent.footer.textonstart}`, iconURL: `https://cdn.discordapp.com/avatars/${get_interaction.user.id}/${get_interaction.user.avatar}.png?size=256`});
+                let emojiquiz_send = await get_interaction.guild.channels.cache.get(row_nod2.channelID).send({embeds: [emoji_embed], components: [emojiquiz_btns]});
+			
+            let getinfos = `UPDATE emojiquiz SET guildID = ${get_interaction.guildId}, guildName = '${get_interaction.guild.name}', channelID = ${get_interaction.channel.id}, currentEmoji = '${emojiquiz[0].word}', emojiMsgID = ${emojiquiz_send.id} WHERE guildID = ${get_interaction.guildId}`;
+            get_connection.query(getinfos, function (err, data, result) {
+            });
+            
+            let get_emojiquiz3 = `SELECT * FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
+            get_connection.query(get_emojiquiz3, function (err, data, result) {
+            var row_nod3;
+            Object.keys(data).forEach(function(key) {
+                row_nod3 = data[key];
+        });	
+
+            let get_d = JSON.parse(row_nod3.data);
+
+            if (get_d.length === 0) {
+                let emojiquiz_delete = `DELETE FROM emojiquiz WHERE guildID = ${get_interaction.guildId}`;
+                get_connection.query(emojiquiz_delete, function (errs, data, result) {
+                var row_nod;
+                Object.keys(data).forEach(function(key) {
+                row_nod = data[key];
+                });
+                });
+            }
+        });
+        } catch (error) {
+            return;
+            } 
+        }
+        make_a();
+		});
+
                 const make_a = async function() {
                 try {
                 const embed = new EmbedBuilder()
@@ -567,7 +651,6 @@ module.exports = class Emojiquiz {
                             await get_button.editReply({embeds: [embed], components: [emojiquiz_moderation_btns] });
                             await get_button.followUp({content: `You declined **${get_button.message.embeds[0].data.footer.text}** emojiquiz suggestion. ❌`, ephemeral: true});
                             } catch (error) {
-                                console.log(error);
                                 return;
                             }  
                         }
