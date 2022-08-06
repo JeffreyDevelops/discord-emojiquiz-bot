@@ -16,7 +16,6 @@ module.exports = {
 		const emojiquiz_channel = await interaction.options.getChannel('channel');
         const emojiquiz_pending = await interaction.options.getChannel('pending_channel');
         let bot = interaction.member.guild.members.cache.find(user => user.user.username === "Emojiquiz");
-        console.log(bot);
         const check_if_perm = bot.permissions.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageMessages || PermissionFlagsBits.Administrator]);
         if (check_if_perm === false) {
     const embed = new EmbedBuilder()
