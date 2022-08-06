@@ -451,6 +451,17 @@ module.exports = class Emojiquiz {
 				
 			}
 		}
+        try {
+            if (row_nod.bulkDeleteCounter > 30) {
+                let zero_counter = `UPDATE emojiquiz SET bulkDeleteCounter = 0 WHERE guildID = ${get_message.guildId}`;
+                get_connection.query(zero_counter, function (err, data, result) {
+                    console.log(err);
+                }); 
+            }
+        } catch (error) {
+            return;
+        }
+       
 
 	});
     }
