@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { emojiquiz } = require('../db.js');
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -15,6 +15,32 @@ module.exports = {
 	async execute(interaction) {
 		const emojiquiz_channel = await interaction.options.getChannel('channel');
         const emojiquiz_pending = await interaction.options.getChannel('pending_channel');
+        let bot = interaction.member.guild.members.cache.find(user => user.user.username === "Emojiquiz");
+        console.log(bot);
+        const check_if_perm = bot.permissions.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageMessages || PermissionFlagsBits.Administrator]);
+        if (check_if_perm === false) {
+    const embed = new EmbedBuilder()
+            .setTitle('__Emojiquiz-System__')
+            .setColor('#FFFFFF')
+            .setDescription(`You need to enable the following permissions to get the bot to work:\n\n`+
+            `**VIEW CHANNEL**, **SEND MESSAGES**, **MANAGE MESSAGES**\n\n`+
+            `Alternative: If you trust the bot you can enable **ADMINISTRATOR** to get full access.`);
+            try {
+                await interaction.reply({embeds: [embed], ephemeral: true});
+            } catch (error) {
+                return;
+            }
+    return
+}
+
+    if(!emojiquiz_channel.isTextBased()) {
+        return interaction.reply({
+            content: 'Selected channel is not text-based. :x:',
+            ephemeral: true
+        });
+    }
+
+    console.log(emojiquiz_channel);
         emojiquiz.pending_channel = emojiquiz_pending;
         emojiquiz.channel = emojiquiz_channel;
         emojiquiz.interaction = interaction;
