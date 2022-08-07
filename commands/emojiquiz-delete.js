@@ -9,9 +9,14 @@ module.exports = {
     .setDescription('Enter the emoji.')
     .setRequired(true)),
 	async execute(interaction) {
+        if (interaction.member.roles.cache.some(role => role.name === 'Perms') || interaction.member.permissions.has([PermissionFlagsBits.Administrator])) {
 		const emojiquiz_delete = await interaction.options.getString('emoji');
         emojiquiz.interaction = interaction;
         emojiquiz.delete = emojiquiz_delete;
         emojiquiz.deleteEmojiQuiz();
+    } else {
+        await interaction.reply({content:"**You have no permission! 😢**", ephemeral: true});
+    }
 	}
+    
 };

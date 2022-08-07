@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { emojiquiz } = require('../db.js');
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,6 +17,7 @@ module.exports = {
 				.setDescription('Enter the searched word.')
 				.setRequired(true)),
 	async execute(interaction) {
+		if (interaction.member.roles.cache.some(role => role.name === 'Perms') || interaction.member.permissions.has([PermissionFlagsBits.Administrator])) {
 		const emoji_word = await interaction.options.getString('emoji-word');
         const emoji_hint = await interaction.options.getString('emoji-hint');
         const searched_word = await interaction.options.getString('searched-word');
@@ -26,6 +27,8 @@ module.exports = {
 		emojiquiz.searched_word = searched_word;
 		emojiquiz.createEmojiQuiz();
 
-
+		} else {
+			await interaction.reply({content:"**You have no permission! 😢**", ephemeral: true});
+		}
 	}
 };

@@ -13,6 +13,7 @@ module.exports = {
         .setDescription('Select channel where new emojiquiz suggestion should be sent to.')
         .setRequired(true)),
 	async execute(interaction) {
+        if (interaction.member.roles.cache.some(role => role.name === 'Perms') || interaction.member.permissions.has([PermissionFlagsBits.Administrator])) {
 		const emojiquiz_channel = await interaction.options.getChannel('channel');
         const emojiquiz_pending = await interaction.options.getChannel('pending_channel');
         let bot = interaction.member.guild.members.cache.find(user => user.user.username === "Emojiquiz");
@@ -44,6 +45,8 @@ module.exports = {
         emojiquiz.channel = emojiquiz_channel;
         emojiquiz.interaction = interaction;
         emojiquiz.setup();
-
+    } else {
+        await interaction.reply({content:"**You have no permission! 😢**", ephemeral: true});
+    }
 	}
 };
